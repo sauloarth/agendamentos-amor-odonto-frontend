@@ -17,7 +17,7 @@ Consome a API em [`../backend`](../backend). Contrato completo no Swagger do bac
 |---|---|
 | `client` | Tela **Criar conta** (`POST /api/auth/register`) |
 | `admin` | No backend: `npm run seed:admin -- admin@exemplo.com senha123 "Admin"` |
-| `professional` | Um admin promove um `client` via `PATCH /api/users/:id/role` (hoje só pelo Swagger — ainda não há tela) |
+| `professional` | Um admin busca o usuário (`GET /api/users?search=`) e o promove via `PATCH /api/users/:id/role` (hoje só pelo Swagger — ainda não há tela) |
 
 ## Identidade visual
 
@@ -29,7 +29,7 @@ Consome a API em [`../backend`](../backend). Contrato completo no Swagger do bac
 ## Estrutura
 
 - `src/api/axios.js` — instância do axios: injeta o token em cada requisição e, em `401` com token, limpa a sessão (`setUnauthorizedHandler`)
-- `src/api/{auth,products,availability,appointments,blocks,users}.js` — serviços por recurso: funções finas sobre `api` que devolvem `res.data` (ex.: `listProducts`, `getAvailability`, `createAppointment`, `cancelAppointment`, `setBlockActive`, `updateUserRole`). Páginas chamam esses serviços, nunca montam URLs
+- `src/api/{auth,products,availability,appointments,blocks,users}.js` — serviços por recurso: funções finas sobre `api` que devolvem `res.data` (ex.: `listProducts`, `getAvailability`, `createAppointment`, `cancelAppointment`, `setBlockActive`, `updateUserRole`, `listUsers`, `updateProfile`). Páginas chamam esses serviços, nunca montam URLs
 - `src/api/errors.js` — `getApiError(err)` normaliza os erros da API (`{ message }` ou `{ message, errors: [{ field, message }] }`) em `{ message, fieldErrors }`
 - `src/context/AuthContext.jsx` — estado de autenticação; token só no `localStorage`, `user` = `{ _id, name, email, role }`; expõe `login`, `register`, `logout`, `user`, `loading`
 - `src/utils/roles.js` — `ROLES` (`client`, `professional`, `admin`) e `homePathFor(role)`
@@ -53,5 +53,5 @@ Consome a API em [`../backend`](../backend). Contrato completo no Swagger do bac
 | Admin | Procedimentos | `GET/POST /products`, `GET/PATCH /products/:id` |
 | Admin | Bloqueios (clínica e profissionais) | `GET/POST /blocks`, `PATCH /blocks/:id` |
 | Admin | Agendamentos | `GET /appointments?professional=&status=`, `PATCH /appointments/:id/cancel` |
-| Admin | Equipe | `PATCH /users/:id/role` |
-
+| Admin | Equipe | `GET /users?role=&search=`, `PATCH /users/:id/role` |
+| Todos | Meu perfil | `GET /auth/me`, `PATCH /auth/me` |
