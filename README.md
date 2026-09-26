@@ -1,75 +1,194 @@
-# Amor Odonto — Frontend
+<div align="center">
 
-Interface do sistema de agendamento da clínica (paciente, profissional e admin). Stack: React + Vite + Tailwind + React Router + Axios.
+# Amor Odonto
 
-Consome a API em [`../backend`](../backend). Contrato completo no Swagger do backend: http://localhost:3000/api/docs.
+**Agendamento online para clínicas odontológicas: o paciente marca sozinho, a equipe só atende.**
 
-## Setup
+![React](https://img.shields.io/badge/React_18-20232A?logo=react&logoColor=61DAFB)
+![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-0F172A?logo=tailwindcss&logoColor=38BDF8)
+![React Router](https://img.shields.io/badge/React_Router_6-CA4245?logo=reactrouter&logoColor=white)
+![Node.js API](https://img.shields.io/badge/API-Node.js_%2B_MongoDB-1F4D45?logo=nodedotjs&logoColor=white)
 
-1. Suba o backend (`cd ../backend && npm run dev`) — por padrão em `http://localhost:3000`.
+<img src="docs/screenshots/booking-flow.gif" alt="Paciente agendando uma restauração: escolhe procedimento, profissional, dia e horário, e confirma" width="880">
+
+<sub>Um agendamento completo em poucos cliques: procedimento → profissional → horário livre → confirmação.</sub>
+
+</div>
+
+---
+
+## O problema
+
+Em muitas clínicas, marcar uma consulta ainda depende de telefone e WhatsApp em horário comercial. A recepção perde tempo confirmando horários, surgem encaixes duplicados, e a agenda de cada dentista fica espalhada entre cadernos e planilhas.
+
+## A solução
+
+O **Amor Odonto** é um sistema web de agendamento com três áreas, uma para cada público:
+
+| | Quem usa | O que ganha |
+|---|---|---|
+| 🦷 **Paciente** | Quem vai ser atendido | Agenda 24 h por dia, vê preço e duração antes de confirmar, acompanha e cancela as próprias consultas. |
+| 👩‍⚕️ **Profissional** | Dentistas da clínica | Agenda do dia com contato de cada paciente e controle dos próprios bloqueios (congresso, plantão, pós-graduação). |
+| 🏥 **Administração** | Gestão e recepção | Visão de todos os agendamentos, cadastro de procedimentos e preços, horário de funcionamento e gestão da equipe. |
+
+Os horários oferecidos ao paciente são **calculados em tempo real** a partir da duração do procedimento, das consultas já marcadas e dos bloqueios da clínica e do profissional. Por isso não existe encaixe duplicado: se dois pacientes disputam o mesmo horário, o segundo é avisado e escolhe outro na hora.
+
+---
+
+## Funcionalidades
+
+### Para o paciente
+
+**Agendamento guiado em quatro etapas.** O paciente escolhe o procedimento (com duração e preço visíveis), o profissional e um horário livre na semana, e confere o resumo antes de confirmar. Se o procedimento é feito por um só profissional, essa etapa é pulada. Voltar e trocar uma escolha limpa automaticamente as etapas seguintes.
+
+<table>
+  <tr>
+    <td><img src="docs/screenshots/booking-products.png" alt="Etapa 1: lista de procedimentos com duração e preço"></td>
+    <td><img src="docs/screenshots/booking-slots.png" alt="Etapa 3: dias da semana e grade de horários livres"></td>
+  </tr>
+  <tr>
+    <td align="center"><sub>Procedimentos com duração e preço</sub></td>
+    <td align="center"><sub>Só aparecem horários realmente livres</sub></td>
+  </tr>
+</table>
+
+**Minhas consultas.** Próximas, anteriores e canceladas em abas separadas, com detalhes de valor, duração e contato do profissional. O cancelamento é feito em duas etapas, com motivo opcional, e o paciente recebe um e-mail avisando (o mesmo acontece ao agendar).
+
+<p align="center">
+  <img src="docs/screenshots/cancel-flow.gif" alt="Paciente cancelando uma consulta com motivo e a consulta passando para a aba Canceladas" width="880">
+</p>
+
+### Para o profissional
+
+**Agenda pessoal**, com o paciente de cada consulta e o contato dele a um clique. **Bloqueios de agenda** únicos (um congresso, uma tarde de folga) ou recorrentes (toda segunda e sexta, das 7h30 às 9h). Um horário bloqueado some na hora da tela de agendamento dos pacientes.
+
+<p align="center">
+  <img src="docs/screenshots/professional-agenda.png" alt="Agenda da profissional com o contato do paciente expandido" width="880">
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/block-flow.gif" alt="Profissional criando um bloqueio recorrente às segundas e sextas" width="880">
+</p>
+
+### Para a administração
+
+- **Agendamentos da clínica**, com filtro por profissional e abas por situação.
+- **Procedimentos**: nome, duração, preço em reais e quais profissionais atendem cada um; é possível desativar sem apagar o histórico.
+- **Horário de funcionamento e feriados** configurados como bloqueios da clínica inteira (almoço, fim de semana, dedetização).
+- **Equipe**: busca por nome ou e-mail, com promoção de paciente a profissional (e o caminho inverso) mediante confirmação.
+
+<table>
+  <tr>
+    <td><img src="docs/screenshots/admin-appointments.png" alt="Todos os agendamentos da clínica com filtro por profissional"></td>
+    <td><img src="docs/screenshots/admin-products.png" alt="Lista de procedimentos com preço, duração e profissionais"></td>
+  </tr>
+  <tr>
+    <td align="center"><sub>Todos os agendamentos</sub></td>
+    <td align="center"><sub>Procedimentos e preços</sub></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/blocks.png" alt="Bloqueios da clínica e dos profissionais"></td>
+    <td><img src="docs/screenshots/admin-team.png" alt="Gestão da equipe com busca e troca de papel"></td>
+  </tr>
+  <tr>
+    <td align="center"><sub>Funcionamento e bloqueios</sub></td>
+    <td align="center"><sub>Equipe</sub></td>
+  </tr>
+</table>
+
+---
+
+## Experiência e qualidade
+
+- **Identidade visual própria**: verde-pinho com acento em ocre, títulos em Fraunces e interface em Inter. Nada de template genérico: o login usa um layout dividido com a marca em destaque.
+- **Funciona no celular**: navegação rolável, grade de horários adaptada e dias da semana em faixa deslizante.
+- **Fuso horário da clínica**: datas e horários aparecem sempre no horário de Brasília, mesmo que o paciente acesse de outro fuso.
+- **Estados bem resolvidos**: carregamento, lista vazia e erro com "Tentar novamente" em todas as telas, e avisos (toasts) após cada ação.
+- **Acessibilidade**: abas com semântica ARIA, avisos anunciados a leitores de tela (`aria-live`), rótulos em todos os campos e erros de validação ligados a cada campo.
+- **Segurança**: autenticação por JWT, cada rota restrita ao seu papel, sessão encerrada automaticamente quando o token expira, e cabeçalhos de segurança (CSP, HSTS, X-Frame-Options) no deploy.
+
+<p align="center">
+  <img src="docs/screenshots/mobile.png" alt="Telas de agendamento e de minhas consultas no celular" width="560">
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/login.png" alt="Tela de login com layout dividido" width="880">
+</p>
+
+---
+
+## Tecnologias
+
+| Camada | Stack |
+|---|---|
+| Frontend (este repositório) | React 18, Vite, Tailwind CSS, React Router 6, Axios |
+| [Backend](https://github.com/sauloarth/agendamentos-amor-odonto) | Node.js, TypeScript, Express, MongoDB (Mongoose), Zod, JWT, Nodemailer, Swagger/OpenAPI |
+| Deploy | Render (site estático com CDN + API), blueprint em [`render.yaml`](render.yaml) |
+
+---
+
+## Rodando localmente
+
+1. Suba o backend (`cd ../backend && npm run dev`), que por padrão responde em `http://localhost:3000`.
 2. `npm install`
 3. `cp .env.example .env` e, se necessário, ajuste `VITE_API_URL` (padrão `http://localhost:3000/api`).
 4. `npm run dev` → http://localhost:5173
+
+| Comando | O que faz |
+|---|---|
+| `npm run dev` | Servidor de desenvolvimento (Vite) |
+| `npm run build` | Build de produção em `dist/` |
+| `npm run preview` | Serve o build localmente |
 
 ### Usuários para testar
 
 | Papel | Como obter |
 |---|---|
-| `client` | Tela **Criar conta** (`POST /api/auth/register`) |
-| `admin` | No backend: `npm run seed:admin -- admin@exemplo.com senha123 "Admin"` |
-| `professional` | Um admin busca o usuário (`GET /api/users?search=`) e o promove em **Equipe** (admin), que usa `PATCH /api/users/:id/role` |
+| Paciente | Tela **Criar conta** |
+| Administrador | No backend: `npm run seed:admin -- admin@exemplo.com senha123 "Admin"` |
+| Profissional | Um administrador promove o usuário na tela **Equipe** |
 
-## Identidade visual
+---
 
-- Cor primária: verde-pinho (`pine-600` #1F4D45); acento em ocre (`ochre-500` #B8863B), usado com moderação em confirmações/destaques
-- Tipografia: Fraunces (serif) para títulos, Inter para interface e formulários
-- Fundo: papel quente (`canvas` #F5F1EA)
-- Telas de login/registro usam layout split-screen (identidade à esquerda, formulário à direita) para fugir do card centralizado genérico
+## Arquitetura (resumo)
 
-## Estrutura
+SPA com três áreas protegidas por papel (`client`, `professional`, `admin`), cada uma com sua página inicial (`/`, `/profissional`, `/admin`).
 
-- `src/api/axios.js` — instância do axios: injeta o token em cada requisição e, em `401` com token, limpa a sessão (`setUnauthorizedHandler`)
-- `src/api/{auth,products,availability,appointments,blocks,users}.js` — serviços por recurso: funções finas sobre `api` que devolvem `res.data` (ex.: `listProducts`, `getAvailability`, `createAppointment`, `cancelAppointment`, `setBlockActive`, `updateUserRole`, `listUsers`, `updateProfile`). Páginas chamam esses serviços, nunca montam URLs
-- `src/api/errors.js` — `getApiError(err)` normaliza os erros da API (`{ message }` ou `{ message, errors: [{ field, message }] }`) em `{ message, fieldErrors, status }`
-- `src/context/AuthContext.jsx` — estado de autenticação; token só no `localStorage`, `user` = `{ _id, name, email, role }`; expõe `login`, `register`, `logout`, `updateProfile` (PATCH `/auth/me` + atualiza o `user`), `user`, `loading`
-- `src/context/ToastContext.jsx` — `useToast()` → `toast.success(msg)` / `toast.error(msg)` (somem em ~4 s; região `aria-live`)
-- `src/hooks/useAsync.js` — `useAsync(fn, deps)` → `{ data, loading, error, reload }`; `error` já passa por `getApiError` e respostas obsoletas são descartadas
-- `src/hooks/useProfessionals.js` — admin: `{ professionals, nameById }` a partir de `GET /users?role=professional` (selects e nomes dos bloqueios, cujo `professional` vem só como ID)
-- `src/utils/roles.js` — `ROLES` (`client`, `professional`, `admin`), `ROLE_LABELS`, `homePathFor(role)` e `navItemsFor(role)` (navegação do layout por papel + "Meu perfil")
-- `src/utils/dates.js` — datas sempre exibidas no fuso da clínica (`America/Sao_Paulo`), qualquer que seja o fuso do navegador: `formatDate`, `formatTime`, `formatDateTime`, `formatWeekdayDate`, `formatTimeRange`, `toISO`; dias como chave `YYYY-MM-DD` (`clinicDayKey`, `startOfClinicDay`, `endOfClinicDay` exclusivo, `endOfClinicDayInclusive`, `addDays`); `clinicDateTime(dayKey, 'HH:mm')` e `clinicTimeKey(date)` para inputs `date`/`time`; `availabilityRange(dayKey, days)` (limitado a 90 dias) e `groupByClinicDay`
-- `src/utils/currency.js` — `formatCurrency` (BRL), `parseCurrency` ("1.234,50" → 1234.5; `NaN` se inválido) e `formatDuration` ("1 h 15 min")
-- `src/utils/appointments.js` — `APPOINTMENT_STATUS` + rótulos pt-BR, `WEEKDAYS` (0 = domingo, igual a `daysOfWeek` dos bloqueios) e `splitAppointments(list)` → `{ upcoming, past, cancelled }` (próximas em ordem crescente; anteriores e canceladas decrescente)
-- `src/utils/blocks.js` — `BLOCK_TYPE`, `WEEKDAYS_FROM_MONDAY`, `formatWeekdays` ("Seg a Sex"), `describeBlock` (título + vigência) e `isBlockEnded`
-- `src/components/layout/ProtectedRoute.jsx` — bloqueia rota por papel; papel sem acesso é mandado para a própria home
-- `src/components/layout/AuthLayout.jsx` — layout compartilhado das telas de auth
-- `src/components/layout/AppLayout.jsx` — layout das áreas logadas: cabeçalho com marca, navegação por papel (rolável no mobile), nome/papel e "Sair"; páginas entram pelo `<Outlet />`. Em `App.jsx`, cada papel é um grupo de rotas aninhadas sob `ProtectedRoute` + `AppLayout`
-- `src/components/ui/` — `Button` (variantes `primary`/`secondary`/`ghost`/`danger`, prop `loading`), `PageHeader`, `LoadingState`, `EmptyState`, `ErrorState` (com "Tentar novamente"), `Spinner`, `Badge` (tons `pine`/`danger`/`ochre`/`neutral`) e `Tabs` (abas acessíveis com contagem opcional)
-- `src/components/booking/` — etapas do agendamento: `StepIndicator`, `ProductStep`, `ProfessionalStep`, `SlotStep` (janela de 7 dias, abas por dia, grade de horários), `AppointmentSummary`, `OptionCard`
-- `src/components/appointments/` — usados nas três agendas: `AppointmentList` (abas Próximas / Anteriores / Canceladas, cancelamento só nas próximas, atualização local sem recarregar; `peopleFor(appointment)` → `[{ label, person }]`), `AppointmentCard` (resumo + detalhe expansível com contato de cada pessoa) e `CancelAppointmentForm` (cancelamento inline em duas etapas, motivo opcional)
-- `src/components/blocks/` — `BlockForm` (cria/edita bloqueio único ou recorrente; tipo travado na edição; no admin, "Aplica-se a" clínica inteira ou profissional) e `BlockCard`
-- `src/components/admin/ProductForm.jsx` — cria/edita procedimento (nome, duração, preço em BRL, profissionais vinculados)
-- `src/components/form/Field.jsx` — campo com label, dica e erro; `as="select"` / `as="textarea"`
-- `src/pages/Login.jsx`, `Register.jsx` — autenticação (registro omite telefone vazio e valida senha ≥ 6)
-- `src/pages/client/BookAppointment.jsx` (`/`, client) — assistente de agendamento em uma página (procedimento → profissional → dia/horário → confirmação); trocar uma escolha limpa as seguintes; procedimento com um só profissional pula a etapa; `409` avisa e volta para os horários, que são recarregados
-- `src/pages/client/MyAppointments.jsx` (`/consultas`, client) — uma chamada a `GET /appointments` separada nas abas Próximas / Anteriores / Canceladas; só as próximas podem ser canceladas, e a consulta cancelada muda de aba sem recarregar a lista
-- `src/pages/professional/ProfessionalAgenda.jsx` (`/profissional`) — consultas do profissional logado, com o paciente em cada cartão
-- `src/pages/BlocksPage.jsx` (`/profissional/bloqueios` e `/admin/bloqueios` com `isAdmin`) — abas Ativos / Inativos, criar, editar, desativar/reativar
-- `src/pages/admin/AdminAppointments.jsx` (`/admin`) — todos os agendamentos, filtro por profissional (`?professional=`) + abas de status
-- `src/pages/admin/AdminProducts.jsx` (`/admin/procedimentos`) — lista com inativos, criar/editar inline, desativar/reativar
-- `src/pages/admin/AdminTeam.jsx` (`/admin/equipe`) — busca (debounce) + abas por papel; promover a profissional e rebaixar a paciente (com confirmação). Admins não têm ação
-- `src/pages/Profile.jsx` (`/perfil`, todos) — dados (nome, telefone; envia só o que mudou, telefone vazio → `null`) e troca de senha (senha atual errada aparece no campo)
+- **Camada de serviços** (`src/api/<recurso>.js`): funções finas sobre uma única instância do Axios, que injeta o token e encerra a sessão em `401`. As páginas nunca montam URLs.
+- **Erros padronizados**: `getApiError` transforma qualquer erro da API em `{ message, fieldErrors, status }`, e os erros de validação aparecem ao lado de cada campo.
+- **Autenticação** (`AuthContext`): valida o token salvo ao abrir o app e segura as rotas até concluir, sem redirecionamentos indevidos.
+- **Dados** (`useAsync`): carregamento com descarte de respostas obsoletas; mutações aplicadas localmente com a resposta da API, sem recarregar a lista.
+- **Datas** (`utils/dates.js`): tudo exibido no fuso `America/Sao_Paulo`, com dias tratados como chaves `YYYY-MM-DD`.
+- **Componentes compartilhados**: `AppointmentList` (usado nas três agendas), `BlocksPage`/`BlockForm` (profissional e admin), além de `Tabs`, `Badge`, `Field` e estados de loading/vazio/erro.
 
-## Mapa de telas × endpoints
+### Mapa de telas × endpoints
 
 | Área | Tela | Endpoints |
 |---|---|---|
-| Paciente | Agendar consulta ✓ | `GET /products`, `GET /availability`, `POST /appointments` |
-| Paciente | Minhas consultas ✓ | `GET /appointments`, `PATCH /appointments/:id/cancel` |
-| Profissional | Minha agenda ✓ | `GET /appointments`, `PATCH /appointments/:id/cancel` |
-| Profissional | Meus bloqueios ✓ | `GET/POST /blocks`, `GET/PATCH /blocks/:id` |
-| Admin | Procedimentos ✓ | `GET/POST /products`, `GET/PATCH /products/:id` |
-| Admin | Bloqueios (clínica e profissionais) ✓ | `GET/POST /blocks`, `PATCH /blocks/:id` |
-| Admin | Agendamentos ✓ | `GET /appointments?professional=`, `PATCH /appointments/:id/cancel` |
-| Admin | Equipe ✓ | `GET /users?role=&search=`, `PATCH /users/:id/role` |
-| Todos | Meu perfil ✓ | `GET /auth/me`, `PATCH /auth/me` |
+| Paciente | Agendar consulta | `GET /products`, `GET /availability`, `POST /appointments` |
+| Paciente | Minhas consultas | `GET /appointments`, `PATCH /appointments/:id/cancel` |
+| Profissional | Minha agenda | `GET /appointments`, `PATCH /appointments/:id/cancel` |
+| Profissional | Meus bloqueios | `GET/POST /blocks`, `GET/PATCH /blocks/:id` |
+| Admin | Procedimentos | `GET/POST /products`, `GET/PATCH /products/:id` |
+| Admin | Bloqueios (clínica e profissionais) | `GET/POST /blocks`, `PATCH /blocks/:id` |
+| Admin | Agendamentos | `GET /appointments?professional=`, `PATCH /appointments/:id/cancel` |
+| Admin | Equipe | `GET /users?role=&search=`, `PATCH /users/:id/role` |
+| Todos | Meu perfil | `GET /auth/me`, `PATCH /auth/me` |
 
+Contrato completo no Swagger do backend: http://localhost:3000/api/docs.
+
+## Próximos passos
+
+1. **Qualidade**: ESLint + Prettier; testes com Vitest + Testing Library e MSW simulando a API (começar por `splitAppointments`, `parseCurrency`, `describeBlock` e os helpers de `dates.js`); pipeline de build/deploy.
+2. Ajustes pendentes na API, listados em [`docs/BACKEND_PENDING.md`](docs/BACKEND_PENDING.md).
+
+---
+
+<div align="center">
+
+Feito por [Saulo Arthur](https://github.com/sauloarth). Quer um sistema assim para a sua clínica ou empresa? Vamos conversar.
+
+<sub>Os nomes, e-mails e telefones das imagens são fictícios.</sub>
+
+</div>
