@@ -50,8 +50,15 @@ export const AuthProvider = ({ children }) => {
     return loggedUser;
   };
 
+  // PATCH /auth/me devolve o usuário completo (com telefone); o contexto guarda só a identidade.
+  const updateProfile = async (payload) => {
+    const updated = await authApi.updateProfile(payload);
+    setUser({ _id: updated._id, name: updated.name, email: updated.email, role: updated.role });
+    return updated;
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout, updateProfile }}>
       {children}
     </AuthContext.Provider>
   );

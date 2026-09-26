@@ -1,16 +1,13 @@
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { homePathFor } from '../../utils/roles';
+import LoadingState from '../ui/LoadingState';
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { user, loading } = useAuth();
 
   if (loading) {
-    return (
-      <div className="flex h-screen items-center justify-center text-ink/60">
-        Carregando...
-      </div>
-    );
+    return <LoadingState className="h-screen" />;
   }
 
   if (!user) {

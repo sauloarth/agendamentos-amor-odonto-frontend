@@ -18,3 +18,23 @@ export const WEEKDAYS = [
   { value: 5, short: 'Sex', long: 'Sexta-feira' },
   { value: 6, short: 'Sáb', long: 'Sábado' },
 ];
+
+const byStart = (a, b) => new Date(a.startDateTime) - new Date(b.startDateTime);
+
+// Separa a lista de GET /appointments (que vem por início desc) em abas:
+// próximas em ordem crescente (a mais próxima primeiro), anteriores e canceladas desc.
+export const splitAppointments = (list, now = new Date()) => {
+  const upcoming = [];
+  const past = [];
+  const cancelled = [];
+  list.forEach((appointment) => {
+    if (appointment.status === APPOINTMENT_STATUS.CANCELLED) cancelled.push(appointment);
+    else if (new Date(appointment.endDateTime) > now) upcoming.push(appointment);
+    else past.push(appointment);
+  });
+  return {
+    upcoming: upcoming.sort(byStart),
+    past: past.sort((a, b) => byStart(b, a)),
+    cancelled: cancelled.sort((a, b) => byStart(b, a)),
+  };
+};

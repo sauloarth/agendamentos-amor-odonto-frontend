@@ -43,6 +43,21 @@ export const addDays = (dayKey, days) => {
 // Fim exclusivo: início do dia seguinte.
 export const endOfClinicDay = (dayKey) => startOfClinicDay(addDays(dayKey, 1));
 
+// Último instante do dia (inclusivo), para limites como `validUntil` dos bloqueios.
+export const endOfClinicDayInclusive = (dayKey) => new Date(`${dayKey}T23:59:59.999${CLINIC_UTC_OFFSET}`);
+
+// Data + 'HH:mm' no horário da clínica (ex.: inputs `date` e `time` de um formulário).
+export const clinicDateTime = (dayKey, time) => new Date(`${dayKey}T${time}:00${CLINIC_UTC_OFFSET}`);
+
+// 'HH:mm' no fuso da clínica (formato de `input type="time"`).
+export const clinicTimeKey = (value) =>
+  new Intl.DateTimeFormat('en-GB', {
+    timeZone: CLINIC_TIME_ZONE,
+    hour: '2-digit',
+    minute: '2-digit',
+    hourCycle: 'h23',
+  }).format(toDate(value));
+
 export const MAX_AVAILABILITY_RANGE_DAYS = 90;
 
 // Período pronto para GET /availability, a partir do início de `dayKey`, com `days` dias.

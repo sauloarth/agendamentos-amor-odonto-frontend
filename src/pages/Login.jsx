@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import AuthLayout from '../components/layout/AuthLayout';
 import Field from '../components/form/Field';
+import Button from '../components/ui/Button';
 import { getApiError } from '../api/errors';
 import { homePathFor } from '../utils/roles';
 
@@ -65,13 +66,9 @@ const Login = () => {
 
         {error && <p className="text-sm text-danger">{error}</p>}
 
-        <button
-          type="submit"
-          disabled={submitting}
-          className="w-full rounded-lg bg-pine-600 text-canvas py-2.5 font-medium hover:bg-pine-700 transition-colors disabled:opacity-60"
-        >
+        <Button type="submit" loading={submitting} className="w-full">
           {submitting ? 'Entrando...' : 'Entrar'}
-        </button>
+        </Button>
       </form>
 
       <p className="text-sm text-ink/60 mt-6">
